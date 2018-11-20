@@ -1,5 +1,5 @@
 .merlin
-node_modules/
+node_modules
 _esy
 _release
 *.byte
