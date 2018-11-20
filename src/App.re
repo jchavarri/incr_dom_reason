@@ -1,11 +1,16 @@
 open! Core_kernel;
 open Incr_dom;
 
+let body = (~children, _) => Vdom.Node.body([], children);
+let div = (~children, _) => Vdom.Node.div([], children);
+let button = (~children, ~onClick, _) =>
+  Vdom.Node.button([Vdom.Attr.on_click(onClick)], children);
+
 module Model = {
   [@deriving (sexp, fields, compare)]
   type t = {counters: Int.Map.t(int)};
 
-  let add_new = t => {
+  let addNew = t => {
     let counters =
       Int.Map.set(t.counters, ~key=Map.length(t.counters), ~data=0);
     {counters: counters};
@@ -13,8 +18,8 @@ module Model = {
 
   /* no bounds checks */
   let update = (t, pos, diff) => {
-    let old_val = Map.find_exn(t.counters, pos);
-    let counters = Int.Map.set(t.counters, ~key=pos, ~data=old_val + diff);
+    let oldVal = Map.find_exn(t.counters, pos);
+    let counters = Int.Map.set(t.counters, ~key=pos, ~data=oldVal + diff);
     {counters: counters};
   };
 
@@ -24,7 +29,7 @@ module Model = {
 module Action = {
   [@deriving sexp]
   type t =
-    | New_counter
+    | NewCounter
     | Update(int, int); /* pos, diff */
 
   let should_log = _ => true;
@@ -36,7 +41,7 @@ module State = {
 
 let apply_action = (action, model, _state) =>
   switch ((action: Action.t)) {
-  | New_counter => Model.add_new(model)
+  | NewCounter => Model.addNew(model)
   | Update(pos, diff) => Model.update(model, pos, diff)
   };
 
@@ -49,16 +54,16 @@ let on_display = (~old as _, _, _) => ();
 let view = (m: Incr.t(Model.t), ~inject) => {
   open Incr.Let_syntax;
   open Vdom;
-  let on_add_new_click = Attr.on_click(_ev => inject(Action.New_counter));
-  let add_new_counter_button =
-    Node.div(
-      [],
-      [Node.button([on_add_new_click], [Node.text("add new counter")])],
-    );
+  let addNewCounterButton =
+    <div>
+      <button onClick={_ev => inject(Action.NewCounter)}>
+        {Node.text("Add new counter")}
+      </button>
+    </div>;
 
   let button = (txt, pos, diff) => {
-    let on_click = _ev => inject(Action.Update(pos, diff));
-    Vdom.Node.button([Attr.on_click(on_click)], [Node.text(txt)]);
+    let onClick = _ev => inject(Action.Update(pos, diff));
+    <button onClick> {Node.text(txt)} </button>;
   };
 
   let%map elements =
@@ -68,12 +73,12 @@ let view = (m: Incr.t(Model.t), ~inject) => {
         let button_minus = button("-", pos, -1);
         let button_plus = button("+", pos, 1);
         let%map value = value;
-        Node.div(
-          [],
-          [button_minus, Node.text(Int.to_string(value)), button_plus],
-        );
+        <div>
+          button_minus
+          {Node.text(Int.to_string(value))}
+          button_plus
+        </div>;
       },
     );
-
-  Node.body([], [add_new_counter_button, ...Map.data(elements)]);
+  <body> ...{List.cons(addNewCounterButton, Map.data(elements))} </body>;
 };

@@ -4,7 +4,8 @@
   "description": "Example project of janestreet/incr_dom with Reason",
   "license": "MIT",
   "esy": {
-    "build": "refmterr dune build ./src/Main.bc.js"
+    "build": "refmterr dune build ./src/Main.bc.js",
+    "build:prod": "refmterr dune build --profile=prod ./src/Main.bc.js"
   },
   "dependencies": {
     "@opam/dune": "*",
