@@ -1,0 +1,6 @@
+(executable
+  (name Main)
+  (libraries incr_dom)
+  (preprocess (pps js_of_ocaml-ppx ppx_jane ppxlib.runner))
+)
+

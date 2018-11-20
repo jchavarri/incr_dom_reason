@@ -1,0 +1,25 @@
+{
+  "name": "incr_dom_reason",
+  "version": "0.1.0",
+  "description": "Example project of janestreet/incr_dom with Reason",
+  "license": "MIT",
+  "esy": {
+    "build": "refmterr dune build ./src/Main.bc.js"
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/incr_dom": "*",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*",
+    "ocaml": "~4.6.0"
+  },
+  "resolutions": {
+    "@esy-ocaml/esy-installer": "0.0.1",
+    "@opam/menhir": "20171013",
+    "@opam/re": "1.8.0"
+  },
+  "devDependencies": {
+    "@esy-ocaml/merlin": "*",
+    "ocaml": "~4.6.0"
+  }
+}
